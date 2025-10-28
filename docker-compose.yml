@@ -2,24 +2,28 @@ version: '3.8'
 
 services:
   app_blue:
-    image: ${BLUE_IMAGE}
-    environment:
-      - APP_POOL=${BLUE_APP_POOL}
-      - RELEASE_ID=${RELEASE_ID_BLUE}
+    image: yimikaade/wonderful:devops-stage-two
+    container_name: hng-stage2-devops_app_blue_1
     ports:
-      - "8081:80"
+      - "8081:3000"
+    environment:
+      - APP_POOL=blue
 
   app_green:
-    image: ${GREEN_IMAGE}
-    environment:
-      - APP_POOL=${GREEN_APP_POOL}
-      - RELEASE_ID=${RELEASE_ID_GREEN}
+    image: yimikaade/wonderful:devops-stage-two
+    container_name: hng-stage2-devops_app_green_1
     ports:
-      - "8082:80"
+      - "8082:3000"
+    environment:
+      - APP_POOL=green
 
   nginx:
     image: nginx:latest
+    container_name: hng-stage2-devops_nginx_1
     ports:
       - "8080:80"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app_blue
+      - app_green
